@@ -1,4 +1,4 @@
-# Hey! 👋
+### Hey! 👋
 
 ## Introduction
 I have long wanted to learn how to develop a micro service architecture, so I decided to start with the course [Microservices - patterns and practice of building microservices](https://www.udemy.com/course/microservices-nodejs/) on Udemy.
