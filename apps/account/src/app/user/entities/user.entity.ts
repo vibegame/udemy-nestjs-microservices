@@ -1,4 +1,9 @@
-import { IUser, UserRole } from '@purple/interfaces';
+import {
+  IUser,
+  IUserCourse,
+  PurchaseState,
+  UserRole,
+} from '@purple/interfaces';
 import { compare, genSalt, hash } from 'bcryptjs';
 
 export class UserEntity implements IUser {
@@ -7,6 +12,7 @@ export class UserEntity implements IUser {
   email: string;
   passwordHash: string;
   role: UserRole;
+  courses?: IUserCourse[];
 
   constructor(user: IUser) {
     this._id = user._id;
@@ -14,6 +20,48 @@ export class UserEntity implements IUser {
     this.email = user.email;
     this.role = user.role;
     this.passwordHash = user.passwordHash;
+    this.courses = user.courses;
+  }
+
+  addCourse(id: string) {
+    const exist = this.courses.find((c) => c._id === id);
+
+    if (exist) {
+      throw new Error('Course has been already added');
+    }
+
+    this.courses.push({
+      _id: id,
+      purchaseState: PurchaseState.Started,
+    });
+  }
+
+  deleteCourse(id: string) {
+    const exist = this.courses.find((c) => c._id === id);
+
+    if (!exist) {
+      throw new Error('Course not found');
+    }
+
+    this.courses = this.courses.filter((c) => c._id !== id);
+  }
+
+  setCourseState(id: string, state: PurchaseState) {
+    this.courses = this.courses.map((c) => {
+      if (c._id === id) {
+        c.purchaseState = state;
+      }
+
+      return c;
+    });
+  }
+
+  getUserInfo() {
+    return {
+      email: this.email,
+      role: this.role,
+      displayName: this.displayName,
+    };
   }
 
   public async setPassword(password: string) {

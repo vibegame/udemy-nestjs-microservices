@@ -16,8 +16,16 @@ export class UserRepository {
     return await newUser.save();
   }
 
-  async findUser(email: string) {
+  async updateUser({ _id, ...rest }: UserEntity) {
+    return this.userModel.updateOne({ _id }, { $set: { ...rest } }).exec();
+  }
+
+  async findUserByEmail(email: string) {
     return await this.userModel.findOne({ email }).exec();
+  }
+
+  async findUserById(id: string) {
+    return await this.userModel.findById(id).exec();
   }
 
   async deleteUser(email: string) {

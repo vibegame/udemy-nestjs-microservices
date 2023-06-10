@@ -17,7 +17,7 @@ export class AuthService {
     password,
     displayName,
   }: AccountRegister.Request): Promise<AccountRegister.Response> {
-    const existingUser = await this.userRepository.findUser(email);
+    const existingUser = await this.userRepository.findUserByEmail(email);
 
     if (existingUser) {
       throw new Error('User already exists');
@@ -41,7 +41,7 @@ export class AuthService {
     email,
     password,
   }: AccountLogin.Request): Promise<AccountLogin.Response> {
-    const existingUser = await this.userRepository.findUser(email);
+    const existingUser = await this.userRepository.findUserByEmail(email);
 
     if (!existingUser) {
       throw new Error('Username or password are not valid');
