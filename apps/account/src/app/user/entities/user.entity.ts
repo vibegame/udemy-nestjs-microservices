@@ -1,4 +1,6 @@
+import { AccountChangedCourse } from '@purple/contracts';
 import {
+  IDomainEvent,
   IUser,
   IUserCourse,
   PurchaseState,
@@ -7,12 +9,13 @@ import {
 import { compare, genSalt, hash } from 'bcryptjs';
 
 export class UserEntity implements IUser {
-  _id?: string;
+  _id: string;
   displayName?: string;
   email: string;
   passwordHash: string;
   role: UserRole;
-  courses?: IUserCourse[];
+  courses: IUserCourse[] = [];
+  events: IDomainEvent[] = [];
 
   constructor(user: IUser) {
     this._id = user._id;
@@ -70,6 +73,17 @@ export class UserEntity implements IUser {
       }
 
       return c;
+    });
+
+    const eventData: AccountChangedCourse.Request = {
+      courseId: id,
+      userId: this._id,
+      state,
+    };
+
+    this.events.push({
+      topic: AccountChangedCourse.topic,
+      data: eventData,
     });
 
     return this;
