@@ -23,13 +23,21 @@ export class UserEntity implements IUser {
     this.courses = user.courses;
   }
 
-  addCourse(id: string) {
-    const exist = this.courses.find((c) => c._id === id);
+  findCourse(id: string) {
+    return this.courses.find((c) => c._id === id);
+  }
 
-    if (exist) {
-      throw new Error('Course has been already added');
+  findAndThrowCourse(id: string, message = 'Course not found') {
+    const course = this.findCourse(id);
+
+    if (!course) {
+      throw new Error(message);
     }
 
+    return course;
+  }
+
+  addCourse(id: string) {
     this.courses.push({
       _id: id,
       purchaseState: PurchaseState.Started,
@@ -37,16 +45,25 @@ export class UserEntity implements IUser {
   }
 
   deleteCourse(id: string) {
-    const exist = this.courses.find((c) => c._id === id);
-
-    if (!exist) {
-      throw new Error('Course not found');
-    }
-
+    this.findAndThrowCourse(id);
     this.courses = this.courses.filter((c) => c._id !== id);
   }
 
-  setCourseState(id: string, state: PurchaseState) {
+  setCourseState(id: string, state: PurchaseState): this {
+    const course = this.findCourse(id);
+
+    if (!course) {
+      this.addCourse(id);
+
+      return this;
+    }
+
+    if (state === PurchaseState.Cancelled) {
+      this.deleteCourse(id);
+
+      return this;
+    }
+
     this.courses = this.courses.map((c) => {
       if (c._id === id) {
         c.purchaseState = state;
@@ -54,6 +71,8 @@ export class UserEntity implements IUser {
 
       return c;
     });
+
+    return this;
   }
 
   getUserInfo() {
