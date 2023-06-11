@@ -27,7 +27,7 @@ export class UserEntity implements IUser {
   }
 
   findCourse(id: string) {
-    return this.courses.find((c) => c._id === id);
+    return this.courses.find((c) => c.courseId === id);
   }
 
   findAndThrowCourse(id: string, message = 'Course not found') {
@@ -42,14 +42,18 @@ export class UserEntity implements IUser {
 
   addCourse(id: string) {
     this.courses.push({
-      _id: id,
+      courseId: id,
       purchaseState: PurchaseState.Started,
     });
   }
 
   deleteCourse(id: string) {
     this.findAndThrowCourse(id);
-    this.courses = this.courses.filter((c) => c._id !== id);
+    this.courses = this.courses.filter((c) => c.courseId !== id);
+  }
+
+  getCourseState(id: string): PurchaseState {
+    return this.findCourse(id)?.purchaseState || PurchaseState.Started;
   }
 
   setCourseState(id: string, state: PurchaseState): this {
@@ -68,7 +72,7 @@ export class UserEntity implements IUser {
     }
 
     this.courses = this.courses.map((c) => {
-      if (c._id === id) {
+      if (c.courseId === id) {
         c.purchaseState = state;
       }
 
