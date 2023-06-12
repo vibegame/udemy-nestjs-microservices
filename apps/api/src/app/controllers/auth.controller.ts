@@ -14,7 +14,9 @@ export class AuthController {
       return await this.rmqService.send<
         AccountRegister.Request,
         AccountRegister.Response
-      >(AccountRegister.topic, dto);
+      >(AccountRegister.topic, dto, {
+        headers: { requestId: 'kfidjsig4-32kfdso-342kfds-342lf' },
+      });
     } catch (error) {
       if (error instanceof Error) {
         throw new UnauthorizedException();
