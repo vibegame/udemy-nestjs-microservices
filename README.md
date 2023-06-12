@@ -6,6 +6,6 @@ I have long wanted to learn how to develop a micro service architecture, so I de
 ## Description of the course
 A complete course on microservice architecture and the construction of asynchronous systems on the example of Node.js, Nest.js, RabbitMQ and Nx.
 
-- **Status:** In process 🔵
+- **Status:** Finished 🟢
 - **Start Date:** 26th of May 2023
-- **End Date:** -
+- **End Date:** 12th of June 2023
